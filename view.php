@@ -118,10 +118,36 @@ $previous_section_number = "";
 
 $output_html .= "<table class='filescan-details table table-striped table-condensed'><tbody>";
 
+function get_help_icon($link, $title = null) {
+	$title = isset($title) ? $title : get_string('helptitle', 'block_filescan');
+	$o = "<a href='$link' title='$title' aria-haspopup='true' target='_blank'>";
+	$o .= "<img class='icon iconhelp' alt='$title' title='$title' src='" . $OUTPUT->image_url('help') . "'></a>";
+	return $o;
+}
+
+function get_table_header($id) {
+	$o = "<th class='fs-table-header fs-table-header-$id'>";
+	$o .= get_string("table:header:$id", 'block_filescan');
+	$link = get_config('filescan', $id . '_help');
+	if (! empty($link)) {
+		$o .= get_help_icon($link);
+	}
+	$o .= '</th>';
+	return $o;
+}
+
 foreach ($file_list as $f) {
 	if ($f['sectionNumber'] != $previous_section_number) {
 		$output_html .= "<tr><td colspan='7' style='background-color: transparent;border:none;'><h4>" . $f['sectionName'] . "</h4></td></tr>";
-		$output_html .= "<tr><th style=''>Mod</th><th>Filename</th><th>Status</th><th style='border-left-width:2px;'>Has Text</th><th>Has Title</th><th>Has Language</th><th>Has Outline</th></tr>";
+		$output_html .= "<tr>";
+		$output_html .= "<th style=''>Mod</th>";
+		$output_html .= "<th>Filename</th>";
+		$output_html .= "<th>Status</th>";
+		$output_html .= get_table_header('text_check');
+		$output_html .= get_table_header('title_check');
+		$output_html .= get_table_header('lang_check');
+		$output_html .= get_table_header('outline_check');
+		$output_html .= "</tr>";
 	}
 
 	switch($f['status']['hastext']) {
